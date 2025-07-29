@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff0000, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        input[type="text"]::placeholder {
+            color: #aaa;
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            border-color: #ff0000;
+            transform: scale(1.05);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0000;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 5px;
+        }
+
+        .checklist-title {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .clear-btn {
+            padding: 8px 16px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            color: #ff6666;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+        }
+
+        .checklist {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #ff0000;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .checklist-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .checklist-item.completed {
+            opacity: 0.7;
+            border-left-color: #00ff00;
+        }
+
+        .checklist-item.completed .item-text {
+            text-decoration: line-through;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ff0000;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox.checked {
+            background: #ff0000;
+            border-color: #ff0000;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .item-text {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .item-details {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .priority {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority.alta {
+            background: rgba(255, 0, 0, 0.3);
+            color: #ff6666;
+        }
+
+        .priority.media {
+            background: rgba(255, 165, 0, 0.3);
+            color: #ffb366;
+        }
+
+        .priority.baixa {
+            background: rgba(0, 255, 0, 0.3);
+            color: #66ff66;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .delete-btn {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6666;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 0, 0, 0.4);
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .input-section {
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .item-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .filters {
+                justify-content: flex-start;
+            }
+
+            .checklist-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .clear-btn {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Checklist Pro</h1>
+            <p>Organize suas tarefas com estilo</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="Digite sua tarefa...">
+            </div>
+            <div class="input-group">
+                <select id="prioritySelect">
+                    <option value="media">Prioridade Média</option>
+                    <option value="alta">Prioridade Alta</option>
+                    <option value="baixa">Prioridade Baixa</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" onclick="addTask()">Adicionar</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total de Tarefas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Concluídas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingTasks">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completionRate">0%</div>
+                <div class="stat-label">Taxa de Conclusão</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterTasks('todas')">Todas</button>
+            <button class="filter-btn" onclick="filterTasks('pendentes')">Pendentes</button>
+            <button class="filter-btn" onclick="filterTasks('concluidas')">Concluídas</button>
+            <button class="filter-btn" onclick="filterTasks('alta')">Alta Prioridade</button>
+        </div>
+
+        <div class="checklist-header">
+            <h3 class="checklist-title">Suas Tarefas</h3>
+            <button class="clear-btn" onclick="clearCompleted()" title="Limpar tarefas concluídas">
+                🗑️ Limpar Concluídas
+            </button>
+        </div>
+
+        <div class="checklist" id="checklist">
+            <div class="empty-state">
+                <div style="font-size: 3rem; margin-bottom: 20px;">📝</div>
+                <h3>Nenhuma tarefa ainda</h3>
+                <p>Adicione sua primeira tarefa acima!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+        let currentFilter = 'todas';
+        let editingTaskId = null;
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const prioritySelect = document.getElementById('prioritySelect');
+            
+            if (taskInput.value.trim() === '') {
+                taskInput.focus();
+                return;
+            }
+
+            if (editingTaskId) {
+                // Editando tarefa existente
+                const taskIndex = tasks.findIndex(task => task.id === editingTaskId);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex].text = taskInput.value.trim();
+                    tasks[taskIndex].priority = prioritySelect.value;
+                }
+                editingTaskId = null;
+                document.querySelector('.btn-primary').textContent = 'Adicionar';
+            } else {
+                // Adicionando nova tarefa
+                const newTask = {
+                    id: generateId(),
+                    text: taskInput.value.trim(),
+                    priority: prioritySelect.value,
+                    completed: false,
+                    createdAt: new Date().toLocaleString('pt-BR')
+                };
+                tasks.unshift(newTask);
+            }
+
+            taskInput.value = '';
+            prioritySelect.value = 'media';
+            renderTasks();
+            updateStats();
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(task => task.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+                updateStats();
+            }
+        }
+
+        function editTask(id) {
+            const task = tasks.find(task => task.id === id);
+            if (task) {
+                document.getElementById('taskInput').value = task.text;
+                document.getElementById('prioritySelect').value = task.priority;
+                document.querySelector('.btn-primary').textContent = 'Atualizar';
+                editingTaskId = id;
+                document.getElementById('taskInput').focus();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            renderTasks();
+            updateStats();
+        }
+
+        function filterTasks(filter) {
+            currentFilter = filter;
+            
+            // Atualizar botões de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderTasks();
+        }
+
+        function clearCompleted() {
+            tasks = tasks.filter(task => !task.completed);
+            renderTasks();
+            updateStats();
+        }
+
+        function getFilteredTasks() {
+            switch (currentFilter) {
+                case 'pendentes':
+                    return tasks.filter(task => !task.completed);
+                case 'concluidas':
+                    return tasks.filter(task => task.completed);
+                case 'alta':
+                    return tasks.filter(task => task.priority === 'alta');
+                default:
+                    return tasks;
+            }
+        }
+
+        function renderTasks() {
+            const checklist = document.getElementById('checklist');
+            const filteredTasks = getFilteredTasks();
+
+            if (filteredTasks.length === 0) {
+                checklist.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">📝</div>
+                        <h3>${tasks.length === 0 ? 'Nenhuma tarefa ainda' : 'Nenhuma tarefa neste filtro'}</h3>
+                        <p>${tasks.length === 0 ? 'Adicione sua primeira tarefa acima!' : 'Tente outro filtro ou adicione novas tarefas.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            checklist.innerHTML = filteredTasks.map(task => `
+                <div class="checklist-item ${task.completed ? 'completed' : ''}">
+                    <div class="checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask('${task.id}')"></div>
+                    <div class="item-content">
+                        <div class="item-text">${task.text}</div>
+                        <div class="item-details">
+                            <span class="priority ${task.priority}">
+                                ${task.priority.toUpperCase()}
+                            </span>
+                            <span>📅 ${task.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" onclick="editTask('${task.id}')" title="Editar">
+                            ✏️
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteTask('${task.id}')" title="Excluir">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const completed = tasks.filter(task => task.completed).length;
+            const pending = total - completed;
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+        }
+
+        // Event listeners
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Inicializar
+        updateStats();
+    </script>
+</body>
+</html>
